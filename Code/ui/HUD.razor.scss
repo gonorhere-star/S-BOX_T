@@ -1,0 +1,36 @@
+.hud-container {
+    position: absolute;
+    bottom: 32px;
+    left: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+
+    .stat {
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: 6px 16px;
+        border-radius: 4px;
+        color: white;
+        font-weight: bold;
+        font-size: 22px;
+        font-family: Poppins;
+        text-shadow: 1px 1px 2px black;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .icon {
+            font-size: 24px;
+            text-shadow: none;
+        }
+
+        &.health .value {
+            color: #ff5555;
+        }
+
+        &.armor .value {
+            color: #55aaff;
+        }
+    }
+}

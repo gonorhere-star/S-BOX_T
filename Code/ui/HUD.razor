@@ -1,0 +1,25 @@
+@using Sandbox;
+@using Sandbox.UI;
+@inherits PanelComponent
+@namespace Sandbox
+
+<root>
+    <div class="hud-container">
+        <div class="stat health">
+            <span class="icon">❤️</span>
+            <span class="value">@Health</span>
+        </div>
+        <div class="stat armor">
+            <span class="icon">🛡️</span>
+            <span class="value">@Armor</span>
+        </div>
+    </div>
+</root>
+
+@code
+{
+    [Property] public float Health { get; set; } = 100f;
+    [Property] public float Armor { get; set; } = 50f;
+
+    protected override int BuildHash() => System.HashCode.Combine( Health, Armor );
+}
