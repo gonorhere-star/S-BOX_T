@@ -4697,9 +4697,8 @@
         {
           "__type": "Sandbox.InventoryPanel",
           "__guid": "f5e53f1d-1d90-4816-9c12-785b02a9e325",
-          "__enabled": false,
+          "__enabled": true,
           "Flags": 0,
-          "IsVisible": true,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -4768,6 +4767,32 @@
           },
           "RenderType": "On",
           "Tint": "1,1,1,1"
+        },
+        {
+          "__type": "Sandbox.BoxCollider",
+          "__guid": "48a5e23d-512e-497c-8fa2-5088856a37a1",
+          "__enabled": true,
+          "Flags": 0,
+          "Center": "1.03999853,0,0",
+          "ColliderFlags": "IgnoreTraces, IgnoreMass",
+          "Elasticity": null,
+          "Friction": null,
+          "IsTrigger": false,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnObjectTriggerEnter": null,
+          "OnObjectTriggerExit": null,
+          "OnTriggerEnter": null,
+          "OnTriggerExit": null,
+          "RollingResistance": null,
+          "Scale": "100,100,100",
+          "Static": false,
+          "Surface": null,
+          "SurfaceVelocity": "0,0,0"
         }
       ],
       "Children": []
@@ -5112,6 +5137,11 @@
       },
       "Sandbox.MovieMaker.MovieRecorderSystem": {
         "DisableClientRecording": false
+      },
+      "Sandbox.Clutter.ClutterGridSystem": {
+        "Storage": {
+          "$blob": "1a79856a-d02d-40a7-8c04-fd689951d1e8"
+        }
       }
     }
   },

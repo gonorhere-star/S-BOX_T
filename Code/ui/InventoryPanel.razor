@@ -6,7 +6,7 @@
 @namespace Sandbox
 
 <root>
-    <div class="inventory-container @(IsVisible ? "visible" : "hidden")">
+    <div class="inventory-container">
         <div class="inventory-content">
             <div class="inventory-grid-wrapper">
                 <div class="inventory-header">Инвентарь (@Items.Count/@MaxSlots) [1-0 выбр] [E действ] [G выброс]</div>
@@ -53,7 +53,11 @@
 </root>
 
 @code {
-    [Property] public bool IsVisible { get; set; } = false;
+    public bool IsVisible
+    {
+        get => Panel.Style.Display == DisplayMode.Flex;
+        set => Panel.Style.Display = value ? DisplayMode.Flex : DisplayMode.None;
+    }
 
     private List<InventorySlot> Items = new();
     private int MaxSlots = 16;
@@ -63,11 +67,12 @@
     {
         ["Helmet"] = null, ["Armor"] = null, ["Weapon"] = null
     };
-
     private InventorySlot selectedSlot;
 
     protected override void OnStart()
     {
+        Panel.Style.Display = DisplayMode.None;
+
         var player = Scene.Directory.FindByName("Player")?.FirstOrDefault();
         if (player != null)
         {
@@ -77,6 +82,7 @@
                 inventoryComponent.OnInventoryChanged += UpdateFromInventory;
                 UpdateFromInventory();
             }
+
             equipmentComponent = player.Components.Get<EquipmentComponent>();
             if (equipmentComponent != null)
             {
@@ -84,6 +90,11 @@
                 UpdateEquipment();
             }
         }
+    }
+
+    public void ToggleVisibility()
+    {
+        IsVisible = !IsVisible;
     }
 
     void UpdateFromInventory()
@@ -134,7 +145,6 @@
         }
         else if (tags.Contains("зелье") || tags.Contains("свиток") || tags.Contains("еда"))
         {
-            Log.Info($"Использован предмет: {selectedSlot.Definition.Name}");
             // Здесь будет реальная логика использования
         }
     }

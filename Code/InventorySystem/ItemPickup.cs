@@ -10,6 +10,7 @@ public class ItemPickup : Component
 
     public ItemDefinition Definition => ItemDatabase.GetByType(ItemType);
 
+
     public void SetHighlight(bool on)
     {
         var renderer = GameObject.GetComponent<ModelRenderer>();
@@ -29,7 +30,6 @@ public class ItemPickup : Component
     {
         if (Definition == null) return false;
 
-        // Попытаться добавить; если получилось, удалить объект
         if (inventory.AddItem(Definition, Quantity))
         {
             GameObject.Destroy();
