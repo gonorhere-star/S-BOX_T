@@ -9,13 +9,12 @@
     <div class="inventory-container">
         <div class="inventory-content">
             <div class="inventory-grid-wrapper">
-                <div class="inventory-header">Инвентарь (@Items.Count/@MaxSlots) [1-0 выбр] [E действ] [G выброс]</div>
+                <div class="inventory-header">Инвентарь (@Items.Count/@MaxSlots) — [Цифры выбор] [E надеть/исп] [G выброс] [Alt+1-3 снять]</div>
                 <div class="inventory-grid">
                     @for (int i = 0; i < Items.Count; i++)
                     {
                         var slot = Items[i];
-                        var isSelected = selectedSlot == slot;
-                        <div class="inventory-slot @(isSelected ? "selected" : "")" data-slot="@i">
+                        <div class="inventory-slot" data-slot="@i">
                             <span class="item-icon">@slot.Definition.Icon</span>
                             <span class="item-name">@slot.Definition.Name</span>
                             @if (slot.Quantity > 1) { <span class="item-qty">@slot.Quantity</span> }
@@ -23,7 +22,7 @@
                     }
                     @for (int i = Items.Count; i < MaxSlots; i++)
                     {
-                        <div class="inventory-slot empty"></div>
+                        <div class="inventory-slot empty" data-slot="@i"></div>
                     }
                 </div>
             </div>
@@ -68,28 +67,28 @@
         ["Helmet"] = null, ["Armor"] = null, ["Weapon"] = null
     };
     private InventorySlot selectedSlot;
+    private Panel highlightedPanel;
+
+    public void Initialize(GameObject playerObject)
+    {
+        inventoryComponent = playerObject.Components.Get<InventoryComponent>();
+        equipmentComponent = playerObject.Components.Get<EquipmentComponent>();
+
+        if (inventoryComponent != null)
+        {
+            inventoryComponent.OnInventoryChanged += UpdateFromInventory;
+            UpdateFromInventory();
+        }
+        if (equipmentComponent != null)
+        {
+            equipmentComponent.OnEquipmentChanged += UpdateEquipment;
+            UpdateEquipment();
+        }
+    }
 
     protected override void OnStart()
     {
         Panel.Style.Display = DisplayMode.None;
-
-        var player = Scene.Directory.FindByName("Player")?.FirstOrDefault();
-        if (player != null)
-        {
-            inventoryComponent = player.Components.Get<InventoryComponent>();
-            if (inventoryComponent != null)
-            {
-                inventoryComponent.OnInventoryChanged += UpdateFromInventory;
-                UpdateFromInventory();
-            }
-
-            equipmentComponent = player.Components.Get<EquipmentComponent>();
-            if (equipmentComponent != null)
-            {
-                equipmentComponent.OnEquipmentChanged += UpdateEquipment;
-                UpdateEquipment();
-            }
-        }
     }
 
     public void ToggleVisibility()
@@ -103,7 +102,9 @@
         Items = new List<InventorySlot>(inventoryComponent.Items);
         MaxSlots = inventoryComponent.MaxSlots;
         if (selectedSlot != null && !Items.Contains(selectedSlot))
-            selectedSlot = null;
+        {
+            ClearHighlight();
+        }
         StateHasChanged();
     }
 
@@ -114,13 +115,43 @@
         StateHasChanged();
     }
 
+    private void ClearHighlight()
+    {
+        if (highlightedPanel != null)
+        {
+            highlightedPanel.Style.BorderColor = Color.Transparent;
+            highlightedPanel.Style.BorderWidth = 1;
+            highlightedPanel = null;
+        }
+        selectedSlot = null;
+    }
+
+    private Panel GetGridPanel()
+    {
+        var container = Panel.GetChild(0) as Panel;
+        if (container == null) return null;
+        var content = container.GetChild(0) as Panel;
+        if (content == null) return null;
+        var gridWrapper = content.GetChild(0) as Panel;
+        if (gridWrapper == null) return null;
+        return gridWrapper.GetChild(1) as Panel;
+    }
+
     public void SelectSlotByIndex(int index)
     {
-        if (index >= 0 && index < Items.Count)
-        {
-            selectedSlot = Items[index];
-            StateHasChanged();
-        }
+        ClearHighlight();
+        if (index < 0 || index >= Items.Count) return;
+
+        var grid = GetGridPanel();
+        if (grid == null) return;
+
+        var slotPanel = grid.Children.ElementAtOrDefault(index);
+        if (slotPanel == null) return;
+
+        slotPanel.Style.BorderColor = Color.Parse("#ffaa00").GetValueOrDefault();
+        slotPanel.Style.BorderWidth = 2;
+        highlightedPanel = slotPanel;
+        selectedSlot = Items[index];
     }
 
     public void DoPrimaryAction()
@@ -128,24 +159,29 @@
         if (selectedSlot == null) return;
         var tags = selectedSlot.Definition.Tags ?? new List<string>();
 
-        if (tags.Contains("оружие") || tags.Contains("броня") || tags.Contains("шлем"))
+        if (tags.Contains("weapon") || tags.Contains("armor") || tags.Contains("helmet"))
         {
             string target = null;
-            if (tags.Contains("оружие")) target = "Weapon";
-            else if (tags.Contains("броня")) target = "Armor";
-            else if (tags.Contains("шлем")) target = "Helmet";
+            if (tags.Contains("weapon")) target = "Weapon";
+            else if (tags.Contains("armor")) target = "Armor";
+            else if (tags.Contains("helmet")) target = "Helmet";
 
-            if (target != null)
+            if (target != null && equipmentComponent != null)
             {
-                equipmentComponent?.Equip(selectedSlot, target);
-                if (equipmentComponent != null && equipmentComponent.Slots[target] == selectedSlot)
-                    selectedSlot = null;
-                StateHasChanged();
+                bool result = equipmentComponent.Equip(selectedSlot, target);
+                if (result)
+                {
+                    if (equipmentComponent.Slots[target] == selectedSlot)
+                        ClearHighlight();
+                    StateHasChanged();
+                }
             }
         }
         else if (tags.Contains("зелье") || tags.Contains("свиток") || tags.Contains("еда"))
         {
-            // Здесь будет реальная логика использования
+            inventoryComponent.RemoveItem(selectedSlot.Definition, 1);
+            if (selectedSlot.Quantity <= 0) ClearHighlight();
+            StateHasChanged();
         }
     }
 
@@ -154,14 +190,20 @@
         if (selectedSlot != null)
         {
             inventoryComponent?.DropItem(selectedSlot);
-            selectedSlot = null;
+            ClearHighlight();
             StateHasChanged();
         }
     }
 
     public void UnequipSlot(string slotName)
     {
+        Log.Info($"[InventoryPanel] UnequipSlot вызван для {slotName}, equipmentComponent is null: {equipmentComponent == null}");
         equipmentComponent?.Unequip(slotName);
+        if (selectedSlot != null && EquipmentSlots.TryGetValue(slotName, out var slot) && slot == selectedSlot)
+        {
+            ClearHighlight();
+        }
+        StateHasChanged();
     }
 
     string GetSlotLabel(string s) => s switch

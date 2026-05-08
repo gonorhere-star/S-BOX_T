@@ -2,34 +2,55 @@ using Sandbox;
 
 public class ItemPickup : Component
 {
-    [Property] public ItemType ItemType { get; set; } = ItemType.Sword;
+    [Property] public string ItemId { get; set; } = "sword";
     [Property] public int Quantity { get; set; } = 1;
 
-    [Property] public Material DefaultMaterial { get; set; }
-    [Property] public Material HighlightMaterial { get; set; }
+    public ItemDefinition Definition => ItemDatabase.GetById(ItemId);
+    private ModelRenderer renderer;
 
-    public ItemDefinition Definition => ItemDatabase.GetByType(ItemType);
-
-
-    public void SetHighlight(bool on)
+    protected override void OnStart()
+{
+    if (Definition == null)
     {
-        var renderer = GameObject.GetComponent<ModelRenderer>();
-        if (renderer == null) return;
+        Log.Error($"[ItemPickup] Предмет с Id '{ItemId}' не найден!");
+        return;
+    }
 
-        if (DefaultMaterial != null && HighlightMaterial != null)
+    Log.Info($"[ItemPickup] Загружаю модель: {Definition.WorldModel}");
+
+    renderer = GameObject.Components.GetOrCreate<ModelRenderer>();
+    if (!string.IsNullOrEmpty(Definition.WorldModel))
+    {
+        var model = Model.Load(Definition.WorldModel);
+        if (model == null || model.IsError)
         {
-            renderer.MaterialOverride = on ? HighlightMaterial : DefaultMaterial;
+            Log.Error($"[ItemPickup] Не удалось загрузить модель '{Definition.WorldModel}'");
         }
         else
         {
-            renderer.Tint = on ? new Color(1f, 1f, 0.5f) : Color.White;
+            renderer.Model = model;
+            Log.Info($"[ItemPickup] Модель загружена успешно");
         }
+    }
+
+        // Добавляем коллайдер
+        if (GameObject.Components.Get<Collider>() == null)
+        {
+            var box = GameObject.Components.Create<BoxCollider>();
+            box.Scale = new Vector3(10, 10, 10);
+            box.IsTrigger = false;
+        }
+    }
+
+    public void SetHighlight(bool on)
+    {
+        if (renderer == null) return;
+        renderer.Tint = on ? Definition.HighlightTint : Color.White;
     }
 
     public bool AddToInventory(InventoryComponent inventory)
     {
         if (Definition == null) return false;
-
         if (inventory.AddItem(Definition, Quantity))
         {
             GameObject.Destroy();

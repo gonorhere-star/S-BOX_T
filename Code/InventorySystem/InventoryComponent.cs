@@ -12,14 +12,12 @@ public partial class InventoryComponent : Component
 
     public InventoryPanel TheInventoryPanel { get; set; }
 
-    /// <summary> Попытаться добавить предмет по определению и количеству. Возвращает true, если добавлено полностью или частично. </summary>
     public bool AddItem(ItemDefinition def, int quantity = 1)
     {
         if (def == null || quantity <= 0) return false;
 
         int remaining = quantity;
 
-        // Дополняем существующие неполные стаки
         foreach (var slot in Items)
         {
             if (slot.Definition == def && slot.Quantity < def.MaxStack)
@@ -32,7 +30,6 @@ public partial class InventoryComponent : Component
             }
         }
 
-        // Создаём новые слоты при необходимости
         while (remaining > 0 && Items.Count < MaxSlots)
         {
             int add = def.MaxStack < remaining ? def.MaxStack : remaining;
@@ -84,22 +81,19 @@ public partial class InventoryComponent : Component
             OnInventoryChanged?.Invoke();
     }
 
-    /// <summary> Выбросить предмет в мир (создать объект перед игроком). </summary>
     public void DropItem(InventorySlot slot)
     {
         if (slot == null || slot.Definition == null) return;
 
-        // Создаём объект подбираемого предмета в мире
-        var pickup = new GameObject();
-        pickup.Name = slot.Definition.Name;
-        pickup.WorldPosition = WorldPosition + WorldRotation.Forward * 50f; // перед игроком
-        pickup.WorldRotation = Rotation.Identity;
+        var pickupGo = new GameObject();
+        pickupGo.Name = slot.Definition.Name;
+        pickupGo.WorldPosition = GameObject.WorldPosition + GameObject.WorldRotation.Forward * 50f;
+        pickupGo.WorldRotation = Rotation.Identity;
 
-        var itemPickup = pickup.Components.Create<ItemPickup>();
-        itemPickup.ItemType = ItemDatabase.GetItemType(slot.Definition.Id); // нужен метод для обратного преобразования
+        var itemPickup = pickupGo.Components.Create<ItemPickup>();
+        itemPickup.ItemId = slot.Definition.Id;   // теперь строка
         itemPickup.Quantity = slot.Quantity;
 
-        // Удаляем из инвентаря
         RemoveSlot(slot);
     }
 }

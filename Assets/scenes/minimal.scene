@@ -347,7 +347,7 @@
           "CreateAttachments": false,
           "LodOverride": null,
           "MaterialGroup": null,
-          "MaterialOverride": "materials/default.vmat",
+          "MaterialOverride": "materials/1.vmat",
           "Materials": null,
           "Model": "models/dev/plane.vmdl",
           "OnComponentDestroy": null,
@@ -4710,13 +4710,13 @@
       "Children": []
     },
     {
-      "__guid": "b7f43a09-8c02-419b-a7b2-b3cb815b11d8",
+      "__guid": "559dc787-8057-47a7-8f93-6e6f54b0a3b1",
       "__version": 2,
       "Flags": 0,
-      "Name": "ItemTest",
-      "Position": "57.0720825,-133.783539,6.1557827",
+      "Name": "Drop1",
+      "Position": "51.7743149,-16.6055717,35.8214111",
       "Rotation": "0,0,0,1",
-      "Scale": "0.124478996,0.237898424,0.237898424",
+      "Scale": "1,1,1",
       "Tags": "",
       "Enabled": true,
       "NetworkMode": 2,
@@ -4727,12 +4727,10 @@
       "Components": [
         {
           "__type": "ItemPickup",
-          "__guid": "cebdb258-4733-4e42-9b7e-f366c2194af6",
+          "__guid": "d8e92256-c914-4eed-b3ce-6f4026cd96f2",
           "__enabled": true,
           "Flags": 0,
-          "DefaultMaterial": "materials/1.vmat",
-          "HighlightMaterial": "materials/2.vmat",
-          "ItemType": "Sword",
+          "ItemId": "sword",
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -4740,71 +4738,18 @@
           "OnComponentStart": null,
           "OnComponentUpdate": null,
           "Quantity": 1
-        },
-        {
-          "__type": "Sandbox.ModelRenderer",
-          "__guid": "87de9866-c779-42b1-92a5-97ced54a084c",
-          "__enabled": true,
-          "Flags": 0,
-          "BodyGroups": 18446744073709551615,
-          "CreateAttachments": false,
-          "LodOverride": null,
-          "MaterialGroup": null,
-          "MaterialOverride": "materials/1.vmat",
-          "Materials": null,
-          "Model": null,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
-          "RenderOptions": {
-            "GameLayer": true,
-            "OverlayLayer": false,
-            "BloomLayer": false,
-            "AfterUILayer": false
-          },
-          "RenderType": "On",
-          "Tint": "1,1,1,1"
-        },
-        {
-          "__type": "Sandbox.BoxCollider",
-          "__guid": "48a5e23d-512e-497c-8fa2-5088856a37a1",
-          "__enabled": true,
-          "Flags": 0,
-          "Center": "1.03999853,0,0",
-          "ColliderFlags": "IgnoreTraces, IgnoreMass",
-          "Elasticity": null,
-          "Friction": null,
-          "IsTrigger": false,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
-          "OnObjectTriggerEnter": null,
-          "OnObjectTriggerExit": null,
-          "OnTriggerEnter": null,
-          "OnTriggerExit": null,
-          "RollingResistance": null,
-          "Scale": "100,100,100",
-          "Static": false,
-          "Surface": null,
-          "SurfaceVelocity": "0,0,0"
         }
       ],
       "Children": []
     },
     {
-      "__guid": "474c9496-184b-4718-9e36-39734abd8218",
+      "__guid": "fead8c9d-7d0f-45a0-a4ac-36cd4dee6e63",
       "__version": 2,
       "Flags": 0,
-      "Name": "ItemTest (1)",
-      "Position": "77.1557922,-133.783539,6.1557827",
+      "Name": "Drop1 (1)",
+      "Position": "51.7743149,-122.0728,35.8214111",
       "Rotation": "0,0,0,1",
-      "Scale": "0.124478996,0.237898424,0.237898424",
+      "Scale": "1,1,1",
       "Tags": "",
       "Enabled": true,
       "NetworkMode": 2,
@@ -4815,12 +4760,10 @@
       "Components": [
         {
           "__type": "ItemPickup",
-          "__guid": "a62d8f1d-34c3-483d-8726-ce49f31871b3",
+          "__guid": "9d9d39d6-fb7b-49d9-adbd-556e7de086f0",
           "__enabled": true,
           "Flags": 0,
-          "DefaultMaterial": "materials/1.vmat",
-          "HighlightMaterial": "materials/2.vmat",
-          "ItemType": "Shield",
+          "ItemId": "helmet",
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -4828,45 +4771,18 @@
           "OnComponentStart": null,
           "OnComponentUpdate": null,
           "Quantity": 1
-        },
-        {
-          "__type": "Sandbox.ModelRenderer",
-          "__guid": "bf7d0aea-8d69-4236-a2a0-66f4cadd4b4e",
-          "__enabled": true,
-          "Flags": 0,
-          "BodyGroups": 18446744073709551615,
-          "CreateAttachments": false,
-          "LodOverride": null,
-          "MaterialGroup": null,
-          "MaterialOverride": "materials/1.vmat",
-          "Materials": null,
-          "Model": null,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
-          "RenderOptions": {
-            "GameLayer": true,
-            "OverlayLayer": false,
-            "BloomLayer": false,
-            "AfterUILayer": false
-          },
-          "RenderType": "On",
-          "Tint": "1,1,1,1"
         }
       ],
       "Children": []
     },
     {
-      "__guid": "cb623026-2edc-4590-82e0-6475798bca24",
+      "__guid": "b8cbee67-0115-42e5-82e7-9a8f469a0976",
       "__version": 2,
       "Flags": 0,
-      "Name": "ItemTest (2)",
-      "Position": "101.117813,-133.783539,6.1557827",
+      "Name": "Drop1 (2)",
+      "Position": "51.7743149,-179.967728,35.8214111",
       "Rotation": "0,0,0,1",
-      "Scale": "0.124478996,0.237898424,0.237898424",
+      "Scale": "1,1,1",
       "Tags": "",
       "Enabled": true,
       "NetworkMode": 2,
@@ -4877,12 +4793,10 @@
       "Components": [
         {
           "__type": "ItemPickup",
-          "__guid": "3ae4192e-56ca-4e58-b0b6-3b696b3b678d",
+          "__guid": "9400ae26-c065-4040-8921-789b88891514",
           "__enabled": true,
           "Flags": 0,
-          "DefaultMaterial": "materials/1.vmat",
-          "HighlightMaterial": "materials/2.vmat",
-          "ItemType": "ManaPotion",
+          "ItemId": "healthpotion",
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -4890,45 +4804,18 @@
           "OnComponentStart": null,
           "OnComponentUpdate": null,
           "Quantity": 1
-        },
-        {
-          "__type": "Sandbox.ModelRenderer",
-          "__guid": "e1c221fd-109f-431f-89df-ee978f9ea47b",
-          "__enabled": true,
-          "Flags": 0,
-          "BodyGroups": 18446744073709551615,
-          "CreateAttachments": false,
-          "LodOverride": null,
-          "MaterialGroup": null,
-          "MaterialOverride": "materials/1.vmat",
-          "Materials": null,
-          "Model": null,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
-          "RenderOptions": {
-            "GameLayer": true,
-            "OverlayLayer": false,
-            "BloomLayer": false,
-            "AfterUILayer": false
-          },
-          "RenderType": "On",
-          "Tint": "1,1,1,1"
         }
       ],
       "Children": []
     },
     {
-      "__guid": "276ef5d5-d6c7-4e4f-b66c-cf7112311f46",
+      "__guid": "5efc2f4f-2dfa-4b61-88e4-d7dc7e594425",
       "__version": 2,
       "Flags": 0,
-      "Name": "ItemTest (3)",
-      "Position": "101.117813,-115.621811,6.1557827",
+      "Name": "Drop1 (3)",
+      "Position": "51.7743149,-267.184906,35.8214111",
       "Rotation": "0,0,0,1",
-      "Scale": "0.124478996,0.237898424,0.237898424",
+      "Scale": "1,1,1",
       "Tags": "",
       "Enabled": true,
       "NetworkMode": 2,
@@ -4939,12 +4826,10 @@
       "Components": [
         {
           "__type": "ItemPickup",
-          "__guid": "bcca50c4-a65b-43a4-a97b-4ad09cee3716",
+          "__guid": "58ff3616-e03b-4960-ac84-7560f97d9df1",
           "__enabled": true,
           "Flags": 0,
-          "DefaultMaterial": "materials/1.vmat",
-          "HighlightMaterial": "materials/2.vmat",
-          "ItemType": "Key",
+          "ItemId": "armor",
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -4952,45 +4837,18 @@
           "OnComponentStart": null,
           "OnComponentUpdate": null,
           "Quantity": 1
-        },
-        {
-          "__type": "Sandbox.ModelRenderer",
-          "__guid": "ac2eca8b-91e9-45c7-84f0-b2db1acc4591",
-          "__enabled": true,
-          "Flags": 0,
-          "BodyGroups": 18446744073709551615,
-          "CreateAttachments": false,
-          "LodOverride": null,
-          "MaterialGroup": null,
-          "MaterialOverride": "materials/1.vmat",
-          "Materials": null,
-          "Model": null,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
-          "RenderOptions": {
-            "GameLayer": true,
-            "OverlayLayer": false,
-            "BloomLayer": false,
-            "AfterUILayer": false
-          },
-          "RenderType": "On",
-          "Tint": "1,1,1,1"
         }
       ],
       "Children": []
     },
     {
-      "__guid": "2748f17c-c01e-4a8b-9c83-434aa2e59eb6",
+      "__guid": "499cf82b-7a16-446c-a4b6-a6f30382ae39",
       "__version": 2,
       "Flags": 0,
-      "Name": "ItemTest (4)",
-      "Position": "80.2469788,-115.621811,6.1557827",
+      "Name": "Drop1 (4)",
+      "Position": "51.7743149,-338.334625,35.8214111",
       "Rotation": "0,0,0,1",
-      "Scale": "0.124478996,0.237898424,0.237898424",
+      "Scale": "1,1,1",
       "Tags": "",
       "Enabled": true,
       "NetworkMode": 2,
@@ -5001,12 +4859,10 @@
       "Components": [
         {
           "__type": "ItemPickup",
-          "__guid": "36a84b27-c4be-4b26-a0f0-3bfaebb5d9f0",
+          "__guid": "45ba18a0-8406-49bc-b570-60644e277a00",
           "__enabled": true,
           "Flags": 0,
-          "DefaultMaterial": "materials/1.vmat",
-          "HighlightMaterial": "materials/2.vmat",
-          "ItemType": "HealthPotion",
+          "ItemId": "armor",
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -5014,95 +4870,6 @@
           "OnComponentStart": null,
           "OnComponentUpdate": null,
           "Quantity": 1
-        },
-        {
-          "__type": "Sandbox.ModelRenderer",
-          "__guid": "817af686-557a-4c0c-b0b9-2326e09112a1",
-          "__enabled": true,
-          "Flags": 0,
-          "BodyGroups": 18446744073709551615,
-          "CreateAttachments": false,
-          "LodOverride": null,
-          "MaterialGroup": null,
-          "MaterialOverride": "materials/1.vmat",
-          "Materials": null,
-          "Model": null,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
-          "RenderOptions": {
-            "GameLayer": true,
-            "OverlayLayer": false,
-            "BloomLayer": false,
-            "AfterUILayer": false
-          },
-          "RenderType": "On",
-          "Tint": "1,1,1,1"
-        }
-      ],
-      "Children": []
-    },
-    {
-      "__guid": "56ed102c-9bfd-45ad-aa1d-5ebc7ad76748",
-      "__version": 2,
-      "Flags": 0,
-      "Name": "ItemTest (5)",
-      "Position": "55.4932899,-115.621811,6.1557827",
-      "Rotation": "0,0,0,1",
-      "Scale": "0.124478996,0.237898424,0.237898424",
-      "Tags": "",
-      "Enabled": true,
-      "NetworkMode": 2,
-      "NetworkFlags": 0,
-      "NetworkOrphaned": 0,
-      "NetworkTransmit": true,
-      "OwnerTransfer": 1,
-      "Components": [
-        {
-          "__type": "ItemPickup",
-          "__guid": "9fc2ed5c-eea1-4417-8290-c01e27094834",
-          "__enabled": true,
-          "Flags": 0,
-          "DefaultMaterial": "materials/1.vmat",
-          "HighlightMaterial": "materials/2.vmat",
-          "ItemType": "Key",
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
-          "Quantity": 1
-        },
-        {
-          "__type": "Sandbox.ModelRenderer",
-          "__guid": "b1b69a37-84c1-4936-a511-ca5069abfa29",
-          "__enabled": true,
-          "Flags": 0,
-          "BodyGroups": 18446744073709551615,
-          "CreateAttachments": false,
-          "LodOverride": null,
-          "MaterialGroup": null,
-          "MaterialOverride": "materials/1.vmat",
-          "Materials": null,
-          "Model": null,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
-          "RenderOptions": {
-            "GameLayer": true,
-            "OverlayLayer": false,
-            "BloomLayer": false,
-            "AfterUILayer": false
-          },
-          "RenderType": "On",
-          "Tint": "1,1,1,1"
         }
       ],
       "Children": []
@@ -5130,17 +4897,17 @@
       "CustomBounds": false
     },
     "GameObjectSystems": {
-      "Sandbox.SelectionSetsSystem": {
-        "Data": {
-          "SelectionSets": []
-        }
-      },
       "Sandbox.MovieMaker.MovieRecorderSystem": {
         "DisableClientRecording": false
       },
       "Sandbox.Clutter.ClutterGridSystem": {
         "Storage": {
-          "$blob": "1a79856a-d02d-40a7-8c04-fd689951d1e8"
+          "$blob": "35a0d3bb-4ab8-40b9-afda-b6aad16f9971"
+        }
+      },
+      "Sandbox.SelectionSetsSystem": {
+        "Data": {
+          "SelectionSets": []
         }
       }
     }
