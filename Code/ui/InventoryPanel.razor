@@ -6,18 +6,54 @@
 @namespace Sandbox
 
 <root>
-    <div class="inventory-container">
-        <div class="inventory-content">
+    <div class="inventory-container" style="pointer-events: all" draggable="false">
+        <div class="inventory-header">
+            Инвентарь (@Items.Count/@MaxSlots)
+        </div>
+        <div class="inventory-body">
+            <!-- ЛЕВАЯ ПАНЕЛЬ – ИНФОРМАЦИЯ О ПРЕДМЕТЕ -->
+            <div class="item-detail-panel">
+                @if (selectedSlot != null)
+                {
+                    <div class="item-detail-icon">@selectedSlot.Definition.Icon</div>
+                    <div class="item-detail-name">@selectedSlot.Definition.Name</div>
+                    <div class="item-detail-desc">
+                        @(string.IsNullOrEmpty(selectedSlot.Definition.Description) ? "Описание отсутствует" : selectedSlot.Definition.Description)
+                    </div>
+                    <div class="item-detail-actions">
+                        @if (selectedSlot.Definition.Tags?.Contains("weapon") == true ||
+                             selectedSlot.Definition.Tags?.Contains("armor") == true ||
+                             selectedSlot.Definition.Tags?.Contains("helmet") == true)
+                        {
+                            <button class="action-btn equip-btn" onclick="@(e => DoPrimaryAction())">Надеть</button>
+                        }
+                        else
+                        {
+                            <button class="action-btn use-btn" onclick="@(e => DoPrimaryAction())">Использовать</button>
+                        }
+                        <button class="action-btn drop-btn" onclick="@(e => DoDropAction())">Выбросить</button>
+                    </div>
+                }
+                else
+                {
+                    <div class="item-detail-empty">Выберите предмет</div>
+                }
+            </div>
+
+            <!-- ЦЕНТРАЛЬНАЯ СЕТКА ИНВЕНТАРЯ -->
             <div class="inventory-grid-wrapper">
-                <div class="inventory-header">Инвентарь (@Items.Count/@MaxSlots) — [Цифры выбор] [E надеть/исп] [G выброс] [Alt+1-3 снять]</div>
                 <div class="inventory-grid">
                     @for (int i = 0; i < Items.Count; i++)
                     {
                         var slot = Items[i];
-                        <div class="inventory-slot" data-slot="@i">
+                        int slotIndex = i;
+                            <div class="inventory-slot @(selectedSlot == slot ? "selected" : "")" data-slot="@i" onclick="@(e => SelectSlotByIndex(slotIndex))">
                             <span class="item-icon">@slot.Definition.Icon</span>
                             <span class="item-name">@slot.Definition.Name</span>
-                            @if (slot.Quantity > 1) { <span class="item-qty">@slot.Quantity</span> }
+                            @if (slot.Quantity > 1)
+                            {
+                                <span class="item-qty">@slot.Quantity</span>
+                            }
                         </div>
                     }
                     @for (int i = Items.Count; i < MaxSlots; i++)
@@ -25,14 +61,16 @@
                         <div class="inventory-slot empty" data-slot="@i"></div>
                     }
                 </div>
+                <div class="inventory-hint"> E надеть/исп · G выбросить </div>
             </div>
 
+            <!-- ПРАВАЯ ПАНЕЛЬ – ЭКИПИРОВКА -->
             <div class="equipment-panel">
-                <div class="equipment-header">Экипировка [Alt+1/2/3 снять]</div>
+                <div class="equipment-header">Экипировка</div>
                 <div class="equipment-slots">
                     @foreach (var kv in EquipmentSlots)
                     {
-                        <div class="equipment-slot" data-slot-name="@kv.Key">
+                        <div class="equipment-slot" data-slot-name="@kv.Key" onclick="@(e => TryEquipSelectedToSlot(kv.Key))">
                             <span class="slot-label">@GetSlotLabel(kv.Key)</span>
                             @if (kv.Value != null)
                             {
@@ -66,8 +104,8 @@
     {
         ["Helmet"] = null, ["Armor"] = null, ["Weapon"] = null
     };
-    private InventorySlot selectedSlot;
-    private Panel highlightedPanel;
+private InventorySlot selectedSlot;
+
 
     public void Initialize(GameObject playerObject)
     {
@@ -91,10 +129,11 @@
         Panel.Style.Display = DisplayMode.None;
     }
 
-    public void ToggleVisibility()
-    {
-        IsVisible = !IsVisible;
-    }
+public void ToggleVisibility()
+{
+    IsVisible = !IsVisible;
+    StateHasChanged();
+}
 
     void UpdateFromInventory()
     {
@@ -115,16 +154,10 @@
         StateHasChanged();
     }
 
-    private void ClearHighlight()
-    {
-        if (highlightedPanel != null)
-        {
-            highlightedPanel.Style.BorderColor = Color.Transparent;
-            highlightedPanel.Style.BorderWidth = 1;
-            highlightedPanel = null;
-        }
-        selectedSlot = null;
-    }
+private void ClearHighlight()
+{
+    selectedSlot = null;
+}
 
     private Panel GetGridPanel()
     {
@@ -132,27 +165,31 @@
         if (container == null) return null;
         var content = container.GetChild(0) as Panel;
         if (content == null) return null;
-        var gridWrapper = content.GetChild(0) as Panel;
+        var gridWrapper = content.GetChild(1) as Panel; // теперь inventory-grid-wrapper это второй ребенок (после item-detail-panel)
         if (gridWrapper == null) return null;
-        return gridWrapper.GetChild(1) as Panel;
+        return gridWrapper.GetChild(0) as Panel; // inventory-grid
     }
 
-    public void SelectSlotByIndex(int index)
+
+public void SelectSlotByIndex(int index)
+{
+    if (index >= 0 && index < Items.Count)
     {
-        ClearHighlight();
-        if (index < 0 || index >= Items.Count) return;
-
-        var grid = GetGridPanel();
-        if (grid == null) return;
-
-        var slotPanel = grid.Children.ElementAtOrDefault(index);
-        if (slotPanel == null) return;
-
-        slotPanel.Style.BorderColor = Color.Parse("#ffaa00").GetValueOrDefault();
-        slotPanel.Style.BorderWidth = 2;
-        highlightedPanel = slotPanel;
+        // Если кликнули по уже выделенному слоту – снимаем выделение
+        if (selectedSlot == Items[index])
+        {
+            ClearHighlight();
+            StateHasChanged();
+            return;
+        }
         selectedSlot = Items[index];
     }
+    else
+    {
+        ClearHighlight();
+    }
+    StateHasChanged();
+}
 
     public void DoPrimaryAction()
     {
@@ -197,7 +234,6 @@
 
     public void UnequipSlot(string slotName)
     {
-        Log.Info($"[InventoryPanel] UnequipSlot вызван для {slotName}, equipmentComponent is null: {equipmentComponent == null}");
         equipmentComponent?.Unequip(slotName);
         if (selectedSlot != null && EquipmentSlots.TryGetValue(slotName, out var slot) && slot == selectedSlot)
         {
@@ -211,5 +247,28 @@
         "Helmet" => "Шлем", "Armor" => "Броня", "Weapon" => "Оружие", _ => s
     };
 
-    protected override int BuildHash() => System.HashCode.Combine(IsVisible, Items.Count);
+    private void TryEquipSelectedToSlot(string slotName)
+    {
+        if (equipmentComponent == null) return;
+
+        if (selectedSlot != null)
+        {
+            bool success = equipmentComponent.Equip(selectedSlot, slotName);
+            if (success)
+            {
+                if (equipmentComponent.Slots[slotName] == selectedSlot)
+                    ClearHighlight();
+                StateHasChanged();
+            }
+        }
+        else
+        {
+            if (EquipmentSlots.TryGetValue(slotName, out var slot) && slot != null)
+            {
+                UnequipSlot(slotName);
+            }
+        }
+    }
+
+protected override int BuildHash() => System.HashCode.Combine(IsVisible, Items.Count, selectedSlot?.Definition.Id);
 }

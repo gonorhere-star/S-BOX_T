@@ -9,31 +9,23 @@ public class ItemPickup : Component
     private ModelRenderer renderer;
 
     protected override void OnStart()
-{
-    if (Definition == null)
     {
-        Log.Error($"[ItemPickup] Предмет с Id '{ItemId}' не найден!");
-        return;
-    }
+        if (Definition == null)
+            return;
 
-    Log.Info($"[ItemPickup] Загружаю модель: {Definition.WorldModel}");
-
-    renderer = GameObject.Components.GetOrCreate<ModelRenderer>();
-    if (!string.IsNullOrEmpty(Definition.WorldModel))
-    {
-        var model = Model.Load(Definition.WorldModel);
-        if (model == null || model.IsError)
+        // Пытаемся загрузить модель, если путь указан
+        if (!string.IsNullOrEmpty(Definition.WorldModel))
         {
-            Log.Error($"[ItemPickup] Не удалось загрузить модель '{Definition.WorldModel}'");
+            var model = Model.Load(Definition.WorldModel);
+            if (model != null && !model.IsError)
+            {
+                renderer = GameObject.Components.Create<ModelRenderer>();
+                renderer.Model = model;
+            }
         }
-        else
-        {
-            renderer.Model = model;
-            Log.Info($"[ItemPickup] Модель загружена успешно");
-        }
-    }
+        // Если модель не загружена – renderer останется null, куба не будет
 
-        // Добавляем коллайдер
+        // Гарантируем наличие коллайдера
         if (GameObject.Components.Get<Collider>() == null)
         {
             var box = GameObject.Components.Create<BoxCollider>();

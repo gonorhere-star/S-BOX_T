@@ -13,26 +13,19 @@ public class InteractionController : Component
     private TimeSince lastPickupSearch = 0f;
     private const float SearchInterval = 0.1f;
 
-protected override void OnStart()
-{
-    inventory = GameObject.Components.Get<InventoryComponent>();
-
-    // Гарантируем, что EquipmentComponent существует
-    var equip = GameObject.Components.GetOrCreate<EquipmentComponent>();
-
-    var panelObject = Scene.Directory.FindByName("InventoryPanelObject")?.FirstOrDefault();
-    if (panelObject != null)
+    protected override void OnStart()
     {
-        inventoryPanel = panelObject.Components.GetOrCreate<InventoryPanel>();
-        // Передаём панели нашего игрока (этот GameObject)
-        inventoryPanel.Initialize(GameObject);
-        Log.Info("[InteractionController] Панель инвентаря инициализирована");
+        inventory = GameObject.Components.Get<InventoryComponent>();
+        // Убедимся, что EquipmentComponent присутствует
+        GameObject.Components.GetOrCreate<EquipmentComponent>();
+
+        var panelObject = Scene.Directory.FindByName("InventoryPanelObject")?.FirstOrDefault();
+        if (panelObject != null)
+        {
+            inventoryPanel = panelObject.Components.GetOrCreate<InventoryPanel>();
+            inventoryPanel.Initialize(GameObject);
+        }
     }
-    else
-    {
-        Log.Error("[InteractionController] Объект 'InventoryPanelObject' не найден");
-    }
-}
 
     protected override void OnUpdate()
     {
@@ -42,58 +35,40 @@ protected override void OnStart()
         if (Input.Released("Inventory"))
         {
             inventoryPanel?.ToggleVisibility();
-        }
-            // ---- Действия с инвентарём (только когда он открыт) ----
-    if (inventoryPanel != null && inventoryPanel.IsVisible)
-    {
-        // Выбор слота цифрами 1-0 (т.е. 1..10)
-        for (int i = 0; i < 10; i++)
-        {
-            var key = $"Slot{i+1}"; // например "Slot1"
-            if (Input.Released(key))
+
+            // Показать/скрыть курсор мыши в зависимости от видимости инвентаря
+            if (inventoryPanel != null)
             {
-                inventoryPanel.SelectSlotByIndex(i);
-                break;
+                bool isOpen = inventoryPanel.IsVisible;
+                Mouse.Visible = isOpen;          // современный способ (s&box)
+
             }
         }
 
-        // Основное действие (надеть / использовать)
-        if (Input.Released("Use")) // клавиша E
+        // Действия с инвентарём (только когда он открыт)
+        if (inventoryPanel != null && inventoryPanel.IsVisible)
         {
-            inventoryPanel.DoPrimaryAction();
+            if (Input.Released("Use"))
+                inventoryPanel.DoPrimaryAction();
+
+            if (Input.Released("Drop"))
+                inventoryPanel.DoDropAction();
         }
 
-        // Выбросить предмет
-        if (Input.Released("Drop")) // клавиша G – нужно назначить в Input Settings
+        // Все внешние взаимодействия (поиск предметов, подбор) блокируем при открытом инвентаре
+        bool inventoryOpen = inventoryPanel != null && inventoryPanel.IsVisible;
+        if (!inventoryOpen)
         {
-            inventoryPanel.DoDropAction();
-        }
+            if (lastPickupSearch >= SearchInterval)
+            {
+                lastPickupSearch = 0f;
+                UpdateHighlightedPickup();
+            }
 
-   // Снятие экипировки Alt+1/2/3
-
-{
-// Снятие экипировки (Z - шлем, X - броня, C - оружие)
-if (Input.Released("Z")) inventoryPanel.UnequipSlot("Helmet");
-if (Input.Released("X")) inventoryPanel.UnequipSlot("Armor");
-if (Input.Released("C"))
-{
-    Log.Info("[InteractionController] Клавиша C нажата, вызываю UnequipSlot(Weapon)");
-    inventoryPanel.UnequipSlot("Weapon");
-}
-}
-    }
-
-        // Поиск ближайшего предмета с интервалом
-        if (lastPickupSearch >= SearchInterval)
-        {
-            lastPickupSearch = 0f;
-            UpdateHighlightedPickup();
-        }
-
-        // Подбор предмета
-        if (highlightedPickup != null && Input.Pressed("Use"))
-        {
-            TryPickUp();
+            if (highlightedPickup != null && Input.Pressed("Use"))
+            {
+                TryPickUp();
+            }
         }
     }
 

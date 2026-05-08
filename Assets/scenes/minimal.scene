@@ -4743,6 +4743,72 @@
       "Children": []
     },
     {
+      "__guid": "76b4f77d-6a2e-421a-9f8e-336b8fb4b051",
+      "__version": 2,
+      "Flags": 0,
+      "Name": "Drop1 (4)",
+      "Position": "114.5364,-16.6055717,35.8214111",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkFlags": 0,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "ItemPickup",
+          "__guid": "4e3788b5-a3aa-490a-90dc-4f207054dcb0",
+          "__enabled": true,
+          "Flags": 0,
+          "ItemId": "sword",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Quantity": 1
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "d9ca612d-2277-4dc5-8318-aa2657a2657f",
+      "__version": 2,
+      "Flags": 0,
+      "Name": "Drop1 (5)",
+      "Position": "194.589691,-16.6055717,35.8214111",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkFlags": 0,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "ItemPickup",
+          "__guid": "df03e51e-9a8d-4a1a-8519-30fa7272a204",
+          "__enabled": true,
+          "Flags": 0,
+          "ItemId": "sword",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Quantity": 1
+        }
+      ],
+      "Children": []
+    },
+    {
       "__guid": "fead8c9d-7d0f-45a0-a4ac-36cd4dee6e63",
       "__version": 2,
       "Flags": 0,
@@ -4840,39 +4906,6 @@
         }
       ],
       "Children": []
-    },
-    {
-      "__guid": "499cf82b-7a16-446c-a4b6-a6f30382ae39",
-      "__version": 2,
-      "Flags": 0,
-      "Name": "Drop1 (4)",
-      "Position": "51.7743149,-338.334625,35.8214111",
-      "Rotation": "0,0,0,1",
-      "Scale": "1,1,1",
-      "Tags": "",
-      "Enabled": true,
-      "NetworkMode": 2,
-      "NetworkFlags": 0,
-      "NetworkOrphaned": 0,
-      "NetworkTransmit": true,
-      "OwnerTransfer": 1,
-      "Components": [
-        {
-          "__type": "ItemPickup",
-          "__guid": "45ba18a0-8406-49bc-b570-60644e277a00",
-          "__enabled": true,
-          "Flags": 0,
-          "ItemId": "armor",
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null,
-          "Quantity": 1
-        }
-      ],
-      "Children": []
     }
   ],
   "SceneProperties": {
@@ -4897,13 +4930,13 @@
       "CustomBounds": false
     },
     "GameObjectSystems": {
-      "Sandbox.MovieMaker.MovieRecorderSystem": {
-        "DisableClientRecording": false
-      },
       "Sandbox.Clutter.ClutterGridSystem": {
         "Storage": {
           "$blob": "35a0d3bb-4ab8-40b9-afda-b6aad16f9971"
         }
+      },
+      "Sandbox.MovieMaker.MovieRecorderSystem": {
+        "DisableClientRecording": false
       },
       "Sandbox.SelectionSetsSystem": {
         "Data": {
