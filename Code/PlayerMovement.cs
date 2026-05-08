@@ -17,40 +17,34 @@ public class PlayerMovement : Component
 	private CitizenAnimationHelper animationHelper;
 	private Vector3 WishVelocity;
 
+	private InventoryPanel inventoryPanel;
+
 	protected override void OnAwake()
 	{
 		characterController = Components.Get<CharacterController>();
 
-		// Пытаемся найти animationHelper сначала на Player, потом на Body
 		animationHelper = Components.Get<CitizenAnimationHelper>();
 		if ( animationHelper == null && Body != null )
-		{
 			animationHelper = Body.GetComponent<CitizenAnimationHelper>();
-		}
 
-		// Если так и не нашли — пишем подсказку и выходим
-		if ( animationHelper == null )
-		{
-			Log.Warning( "Не найден CitizenAnimationHelper. Добавьте его на Player или на Body." );
-			return;
-		}
-
-		// Привязываем модель к хелперу
-		if ( Body != null )
+		if ( animationHelper != null && Body != null )
 		{
 			var renderer = Body.GetComponent<SkinnedModelRenderer>();
 			if ( renderer != null )
-			{
 				animationHelper.Target = renderer;
-			}
-			else
-			{
-				Log.Warning( "На объекте Body отсутствует SkinnedModelRenderer. Анимации не будут работать." );
-			}
+		}
+	}
+
+	protected override void OnStart()
+	{
+		var obj = Scene.Directory.FindByName( "InventoryPanelObject" )?.FirstOrDefault();
+		if ( obj != null )
+		{
+			inventoryPanel = obj.Components.Get<InventoryPanel>();
 		}
 		else
 		{
-			Log.Warning( "Поле Body не назначено в инспекторе. Перетащите туда объект Body." );
+			Log.Warning( "Объект 'InventoryPanelObject' не найден в сцене!" );
 		}
 	}
 
@@ -59,6 +53,11 @@ public class PlayerMovement : Component
 		BuildWishVelocity();
 		RotateBody();
 		UpdateAnimations();
+
+		if ( inventoryPanel != null && Input.Pressed( "Inventory" ) )
+		{
+			inventoryPanel.IsVisible = !inventoryPanel.IsVisible;
+		}
 	}
 
 	protected override void OnFixedUpdate() => Move();
@@ -84,11 +83,7 @@ public class PlayerMovement : Component
 		if ( horizontalDir.Length < 0.01f ) return;
 
 		var targetRotation = Rotation.LookAt( horizontalDir, Vector3.Up );
-		Body.WorldRotation = Rotation.Lerp(
-			Body.WorldRotation,
-			targetRotation,
-			Time.Delta * BodyRotationSpeed
-		);
+		Body.WorldRotation = Rotation.Lerp( Body.WorldRotation, targetRotation, Time.Delta * BodyRotationSpeed );
 	}
 
 	private void Move()
@@ -101,9 +96,7 @@ public class PlayerMovement : Component
 			characterController.Accelerate( WishVelocity );
 			characterController.ApplyFriction( GroundControl );
 			if ( Input.Pressed( "Jump" ) )
-			{
 				characterController.Punch( Vector3.Up * JumpForce );
-			}
 		}
 		else
 		{

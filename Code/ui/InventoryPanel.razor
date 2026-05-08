@@ -1,0 +1,163 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using System.Collections.Generic;
+@using System.Linq;
+@inherits PanelComponent
+@namespace Sandbox
+
+<root>
+    <div class="inventory-container @(IsVisible ? "visible" : "hidden")">
+        <div class="inventory-content">
+            <div class="inventory-grid-wrapper">
+                <div class="inventory-header">Инвентарь (@Items.Count/@MaxSlots) [1-0 выбр] [E действ] [G выброс]</div>
+                <div class="inventory-grid">
+                    @for (int i = 0; i < Items.Count; i++)
+                    {
+                        var slot = Items[i];
+                        var isSelected = selectedSlot == slot;
+                        <div class="inventory-slot @(isSelected ? "selected" : "")" data-slot="@i">
+                            <span class="item-icon">@slot.Definition.Icon</span>
+                            <span class="item-name">@slot.Definition.Name</span>
+                            @if (slot.Quantity > 1) { <span class="item-qty">@slot.Quantity</span> }
+                        </div>
+                    }
+                    @for (int i = Items.Count; i < MaxSlots; i++)
+                    {
+                        <div class="inventory-slot empty"></div>
+                    }
+                </div>
+            </div>
+
+            <div class="equipment-panel">
+                <div class="equipment-header">Экипировка [Alt+1/2/3 снять]</div>
+                <div class="equipment-slots">
+                    @foreach (var kv in EquipmentSlots)
+                    {
+                        <div class="equipment-slot" data-slot-name="@kv.Key">
+                            <span class="slot-label">@GetSlotLabel(kv.Key)</span>
+                            @if (kv.Value != null)
+                            {
+                                <span class="item-icon">@kv.Value.Definition.Icon</span>
+                                <span class="item-name">@kv.Value.Definition.Name</span>
+                            }
+                            else
+                            {
+                                <span class="empty-icon">⭕</span>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</root>
+
+@code {
+    [Property] public bool IsVisible { get; set; } = false;
+
+    private List<InventorySlot> Items = new();
+    private int MaxSlots = 16;
+    private InventoryComponent inventoryComponent;
+    private EquipmentComponent equipmentComponent;
+    private Dictionary<string, InventorySlot> EquipmentSlots = new()
+    {
+        ["Helmet"] = null, ["Armor"] = null, ["Weapon"] = null
+    };
+
+    private InventorySlot selectedSlot;
+
+    protected override void OnStart()
+    {
+        var player = Scene.Directory.FindByName("Player")?.FirstOrDefault();
+        if (player != null)
+        {
+            inventoryComponent = player.Components.Get<InventoryComponent>();
+            if (inventoryComponent != null)
+            {
+                inventoryComponent.OnInventoryChanged += UpdateFromInventory;
+                UpdateFromInventory();
+            }
+            equipmentComponent = player.Components.Get<EquipmentComponent>();
+            if (equipmentComponent != null)
+            {
+                equipmentComponent.OnEquipmentChanged += UpdateEquipment;
+                UpdateEquipment();
+            }
+        }
+    }
+
+    void UpdateFromInventory()
+    {
+        if (inventoryComponent == null) return;
+        Items = new List<InventorySlot>(inventoryComponent.Items);
+        MaxSlots = inventoryComponent.MaxSlots;
+        if (selectedSlot != null && !Items.Contains(selectedSlot))
+            selectedSlot = null;
+        StateHasChanged();
+    }
+
+    void UpdateEquipment()
+    {
+        if (equipmentComponent == null) return;
+        EquipmentSlots = equipmentComponent.Slots.ToDictionary(k => k.Key, k => k.Value);
+        StateHasChanged();
+    }
+
+    public void SelectSlotByIndex(int index)
+    {
+        if (index >= 0 && index < Items.Count)
+        {
+            selectedSlot = Items[index];
+            StateHasChanged();
+        }
+    }
+
+    public void DoPrimaryAction()
+    {
+        if (selectedSlot == null) return;
+        var tags = selectedSlot.Definition.Tags ?? new List<string>();
+
+        if (tags.Contains("оружие") || tags.Contains("броня") || tags.Contains("шлем"))
+        {
+            string target = null;
+            if (tags.Contains("оружие")) target = "Weapon";
+            else if (tags.Contains("броня")) target = "Armor";
+            else if (tags.Contains("шлем")) target = "Helmet";
+
+            if (target != null)
+            {
+                equipmentComponent?.Equip(selectedSlot, target);
+                if (equipmentComponent != null && equipmentComponent.Slots[target] == selectedSlot)
+                    selectedSlot = null;
+                StateHasChanged();
+            }
+        }
+        else if (tags.Contains("зелье") || tags.Contains("свиток") || tags.Contains("еда"))
+        {
+            Log.Info($"Использован предмет: {selectedSlot.Definition.Name}");
+            // Здесь будет реальная логика использования
+        }
+    }
+
+    public void DoDropAction()
+    {
+        if (selectedSlot != null)
+        {
+            inventoryComponent?.DropItem(selectedSlot);
+            selectedSlot = null;
+            StateHasChanged();
+        }
+    }
+
+    public void UnequipSlot(string slotName)
+    {
+        equipmentComponent?.Unequip(slotName);
+    }
+
+    string GetSlotLabel(string s) => s switch
+    {
+        "Helmet" => "Шлем", "Armor" => "Броня", "Weapon" => "Оружие", _ => s
+    };
+
+    protected override int BuildHash() => System.HashCode.Combine(IsVisible, Items.Count);
+}
